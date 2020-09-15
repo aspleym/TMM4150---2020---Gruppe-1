@@ -3,10 +3,10 @@
 
 void setup()
 {
-  true;
+  return;
 }
 
 void loop()
 {
-  true;
+  return;
 }
