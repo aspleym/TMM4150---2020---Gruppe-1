@@ -1,16 +1,34 @@
 #include <Arduino.h>
+#include <SoftwareSerial.h>
 #include <Wire.h>
+#include <Servo.h>
 
-int ledPin = 13;
-void blinkLED(int inputVal);
+void recvOneChar();
+void showNewData();
+
+SoftwareSerial ss(6, 7);
+
+Servo myservo;
+int servoPin = 9;
+int val;
+
+char receivedChar;
+
+boolean newData = false;
 
 void setup()
 {
   Serial.begin(9600);
+
+  myservo.attach(9);
 }
 
 void loop()
 {
+
+  recvOneChar();
+  showNewData();
+  /*
   // listen for the data from raspberry pi
   if (Serial.available() > 0)
   {
@@ -21,18 +39,30 @@ void loop()
       //Serial.print("Your input is: ");
       //Serial.println(String(inputVal));
       // Here blink the LED
-      blinkLED(inputVal);
+
+      val = 100;                       // reads the value of the potentiometer (value between 0 and 1023)
+      val = map(val, 0, 1023, 0, 180); // scale it to use it with the servo (value between 0 and 180)
+      myservo.write(val);              // sets the servo position according to the scaled value
     }
+  }
+  */
+}
+
+void recvOneChar()
+{
+  if (Serial.available() > 0)
+  {
+    receivedChar = Serial.read();
+    newData = true;
   }
 }
 
-void blinkLED(int inputVal)
+void showNewData()
 {
-  for (int i = 0; i < inputVal; i++)
+  if (newData == true)
   {
-    digitalWrite(ledPin, HIGH);
-    delay(500);
-    digitalWrite(ledPin, LOW);
-    delay(500);
+    Serial.print("This just in ... ");
+    Serial.println(receivedChar);
+    newData = false;
   }
 }
